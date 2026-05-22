@@ -102,6 +102,35 @@ StartupNotify=false
 
 ---
 
+## 📦 Packaging and the installer script
+
+This project provides both a native Arch packaging flow and a convenience installer script for local
+usage and development. Below are the responsibilities of each and when to use them.
+
+- `PKGBUILD` / `makepkg` (Arch/CachyOS):
+  - The `PKGBUILD` file is used to build a native Arch package with `makepkg`.
+  - Its `package()` function copies the final binary and supporting files into the package layout, for
+    example `/usr/bin/gemini-float`, `/usr/share/icons/...`, and `/usr/share/applications/gemini-float.desktop`.
+  - The output is a `.pkg.tar.zst` which can be installed with `pacman -U` or uploaded to the AUR.
+
+- `install.sh` (multi-distro helper):
+  - `install.sh` automates common local install workflows across distributions:
+    - On Arch-like systems it delegates to `makepkg` inside the `packaging/` folder.
+    - On Debian/Ubuntu it builds a `.deb` via `pnpm tauri build` and attempts to install it with `dpkg`.
+    - On generic systems it builds without bundling and copies files to FHS locations (`/usr/local/bin`,
+      `/usr/local/share/icons`, `/usr/local/share/applications`, etc.).
+  - Use `install.sh` for quick local installs during development or when you want the script to manage
+    build-and-install steps for you.
+
+Notes:
+- The repository contains the source `PKGBUILD`, `.install` hooks and `.desktop` file, but it intentionally
+  excludes generated artifacts (for example `packaging/pkg/` or any `*.pkg.tar.zst`). Those build outputs are
+  added to `.gitignore` and should not be committed.
+- If you maintain separate packaging scripts, keep them in `packaging/` and ensure only source files are
+  tracked in Git (not compiled packages).
+
+---
+
 ## 📁 Project Structure
 
 ```
