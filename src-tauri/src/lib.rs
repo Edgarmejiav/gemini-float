@@ -68,8 +68,10 @@ pub fn run() {
             //   return false cancela la navegación antes de que el webview cambie de página
             //
             // Estrategia de espacio:
-            //   El header es position:fixed y NO modifica el padding del body,
-            //   por lo que el área útil del webview permanece intacta (100vh).
+            //   Inyectamos estilos para desplazar todo el contenido de la web 40px hacia abajo
+            //   con un 'transform: translate(0) !important' en el body que fuerza a los
+            //   elementos 'position: fixed' a posicionarse respecto al body en lugar del viewport,
+            //   y el header se monta en 'document.documentElement' (HTML) para que quede arriba.
             let header_script = r#"
 (function() {
     if (window.self !== window.top) return;
@@ -192,8 +194,21 @@ pub fn run() {
         return el;
     }
 
+    function injectStyles() {
+        var styleId = 'tauri-custom-header-style';
+        if (document.getElementById(styleId)) return;
+        var style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = 'html { background:#0d0d17!important; } ' +
+                            'body { position:absolute!important; top:40px!important; left:0!important; right:0!important; bottom:0!important; height:calc(100% - 40px)!important; transform:translate(0)!important; }';
+        document.documentElement.appendChild(style);
+    }
+
     function inject() {
         if (!document.body) return;
+
+        // Inyectar estilos para desplazar el body
+        injectStyles();
 
         if (!header) {
             header = buildHeader();
@@ -201,10 +216,8 @@ pub fn run() {
 
         /* Reinsertar si la SPA de Gemini lo sacó del DOM */
         if (!header.isConnected) {
-            document.body.insertBefore(header, document.body.firstChild);
+            document.documentElement.appendChild(header);
         }
-
-        /* NO modificar padding del body: el header es fixed y no consume espacio */
     }
 
     /* Primer intento inmediato */
