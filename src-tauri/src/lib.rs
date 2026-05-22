@@ -1,5 +1,5 @@
 use tauri::{
-    Manager, WebviewUrl, WebviewWindowBuilder, WindowEvent,
+    Manager, WebviewUrl, WebviewWindowBuilder,
     image::Image,
     menu::{MenuBuilder, MenuItemBuilder},
     tray::TrayIconBuilder,
@@ -20,6 +20,7 @@ fn toggle_window(app: &tauri::AppHandle) {
             let _ = window.hide();
         } else {
             let _ = window.show();
+            let _ = window.set_always_on_top(true);
             let _ = window.set_focus();
         }
     }
@@ -163,16 +164,6 @@ pub fn run() {
                 .build(app)?;
 
             Ok(())
-        })
-        // ── Hide window when it loses focus ──────────────────────────
-        .on_window_event(|window, event| {
-            if !cfg!(debug_assertions) {
-                if let WindowEvent::Focused(false) = event {
-                    if window.label() == "main" {
-                        let _ = window.hide();
-                    }
-                }
-            }
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
