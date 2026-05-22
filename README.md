@@ -1,98 +1,98 @@
 # Gemini Float ✦
 
-Una ventana flotante que encapsula exclusivamente Google Gemini. Sin barras de dirección, sin pestañas, sin distracciones. Solo tú y la IA.
+A floating window wrapper focused exclusively on Google Gemini. No address bar, no tabs, no distractions. Just you and the AI.
 
-**Entorno objetivo:** Linux (CachyOS / GNOME / Wayland)  
+**Target environment:** Linux (CachyOS / GNOME / Wayland)  
 **Stack:** Tauri 2 (Rust + WebKitGTK)
 
 ---
 
-## ⚡ Características
+## ⚡ Features
 
-- **Ventana sin bordes**, siempre encima de las demás aplicaciones
-- **Arranque en la sombra** — al iniciar, no muestra ninguna ventana
-- **Toggle instantáneo** — `Ctrl+Alt+Space` para mostrar/ocultar
-- **Auto-ocultamiento** — al hacer clic fuera, la ventana desaparece
-- **Instancia única** — nunca se duplica el proceso
-- **System Tray** — icono con menú contextual (Mostrar/Ocultar, Salir)
+- **Borderless window**, always on top of other applications
+- **Shadow startup** — starts without showing any window
+- **Instant toggle** — `Ctrl+Alt+Space` to show/hide
+- **Auto-hide** — click outside and the window disappears
+- **Single instance** — never spawns duplicate processes
+- **System Tray** — icon with context menu (Show/Hide, Quit)
 
 ---
 
-## 📦 Prerequisitos
+## 📦 Prerequisites
 
 ```bash
 # Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-# Node.js y pnpm (CachyOS / Arch)
+# Node.js and pnpm (CachyOS / Arch)
 sudo pacman -S nodejs npm
 npm install -g pnpm
 
-# Dependencias del sistema para Tauri 2 (ya incluidas en CachyOS normalmente)
+# System dependencies for Tauri 2 (usually already available on CachyOS)
 sudo pacman -S webkit2gtk-4.1 gtk4 base-devel
 ```
 
 ---
 
-## 🚀 Desarrollo
+## 🚀 Development
 
 ```bash
-# Instalar dependencias JS
+# Install JS dependencies
 pnpm install
 
-# Ejecutar en modo desarrollo
+# Run in development mode
 pnpm tauri dev
 ```
 
 ---
 
-## 🏗️ Build de Producción
+## 🏗️ Production Build
 
 ```bash
 pnpm tauri build
 ```
 
-El binario se genera en `src-tauri/target/release/gemini-float`.
+The binary is generated at `src-tauri/target/release/gemini-float`.
 
 ---
 
-## ⌨️ Configuración del Atajo en Wayland (GNOME)
+## ⌨️ Wayland Shortcut Setup (GNOME)
 
-En Wayland puro, las aplicaciones no pueden capturar atajos globales de teclado. Para que `Ctrl+Alt+Space` funcione:
+On pure Wayland, apps cannot capture global keyboard shortcuts directly. To make `Ctrl+Alt+Space` work:
 
-### Opción 1: GNOME Settings (Recomendado)
+### Option 1: GNOME Settings (Recommended)
 
-1. Abre **Settings → Keyboard → Custom Shortcuts**
-2. Haz clic en **Add Shortcut**
-3. Configura:
-   - **Nombre:** `Gemini Float Toggle`
-   - **Comando:** `/ruta/al/binario/gemini-float --toggle`
-   - **Atajo:** `Ctrl+Alt+Space`
+1. Open **Settings → Keyboard → Custom Shortcuts**
+2. Click **Add Shortcut**
+3. Set:
+   - **Name:** `Gemini Float Toggle`
+   - **Command:** `/path/to/gemini-float --toggle`
+   - **Shortcut:** `Ctrl+Alt+Space`
 
-### Opción 2: CLI directo
+### Option 2: Direct CLI
 
 ```bash
-# Si el proceso ya está corriendo, esto togglea la ventana:
+# If the process is already running, this toggles the window:
 gemini-float --toggle
 
-# Si no está corriendo, esto lo inicia:
+# If it is not running, this starts it:
 gemini-float
 ```
 
-> **Nota:** En sesiones X11/XWayland, el atajo global funciona directamente sin configuración adicional.
+> **Note:** In X11/XWayland sessions, the global shortcut works directly without extra setup.
 
 ---
 
-## 🔄 Autostart con GNOME
+## 🔄 GNOME Autostart
 
-Crea el archivo `~/.config/autostart/gemini-float.desktop`:
+Create the file `~/.config/autostart/gemini-float.desktop`:
 
 ```ini
 [Desktop Entry]
 Type=Application
 Name=Gemini Float
 Comment=Floating Gemini AI wrapper
-Exec=/ruta/al/binario/gemini-float
+Exec=/path/to/gemini-float
 Icon=gemini-float
 Hidden=false
 NoDisplay=true
@@ -102,21 +102,21 @@ StartupNotify=false
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 gemini-float/
 ├── src/                      # Frontend (loading screen fallback)
 │   ├── index.html
 │   └── styles.css
-├── src-tauri/                # Backend Rust
+├── src-tauri/                # Rust backend
 │   ├── src/
 │   │   ├── main.rs           # Entry point
 │   │   └── lib.rs            # Core: toggle, tray, shortcuts, focus
 │   ├── capabilities/
-│   │   └── default.json      # Permisos mínimos
+│   │   └── default.json      # Minimal permissions
 │   ├── icons/
-│   │   └── icon.png          # Icono de la app y tray
+│   │   └── icon.png          # App and tray icon
 │   ├── Cargo.toml
 │   └── tauri.conf.json
 └── package.json
@@ -124,6 +124,6 @@ gemini-float/
 
 ---
 
-## 📄 Licencia
+## 📄 License
 
 MIT
