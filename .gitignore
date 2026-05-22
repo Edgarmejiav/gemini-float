@@ -1,0 +1,61 @@
+# --- OS / file manager ---
+.DS_Store
+Thumbs.db
+
+# --- IDE / editor ---
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# --- Node / JS ---
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Rust / Tauri build artifacts ---
+**/target/
+**/debug/
+**/release/
+**/*.rs.bk
+
+# --- Tauri generated / cache files ---
+src-tauri/gen/
+src-tauri/.cargo/
+
+# --- Local environment / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Logs / temp ---
+*.log
+*.tmp
+*.temp
+cache/
+.tmp/
+
+# --- Packaging outputs ---
+*.deb
+*.rpm
+*.AppImage
+*.snap
+
+# --- Coverage / test output ---
+coverage/
+*.lcov
+
+# --- Arch Linux / makepkg artifacts ---
+/pkg/
+/src/
+packaging/pkg/
+packaging/src/
+packaging/*.pkg.tar.zst
+packaging/*.tar.gz
+packaging/PKGBUILD
+packaging/gemini-float.install
+*.pkg.tar.zst
+

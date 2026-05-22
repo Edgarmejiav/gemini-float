@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Gemini Float
+GenericName=AI Assistant
+Comment=Floating Google Gemini desktop wrapper
+Exec=gemini-float
+Icon=gemini-float
+Terminal=false
+Categories=Network;Utility;
+Keywords=gemini;ai;google;assistant;
+StartupNotify=true
+StartupWMClass=gemini-float
+MimeType=

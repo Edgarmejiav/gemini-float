@@ -1,0 +1,51 @@
+# Maintainer: lega <lega@cachyos>
+pkgname=gemini-float
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Floating Google Gemini desktop wrapper for Linux (GNOME/Wayland)"
+arch=('x86_64')
+url="https://github.com/lega/gemini-float"
+license=('MIT')
+depends=(
+    'webkit2gtk-4.1'
+    'gtk3'
+    'libappindicator-gtk3'
+    'hicolor-icon-theme'
+)
+# Para compilación local no se declaran makedepends ya que las herramientas
+# (rust, pnpm) se gestionan con rustup/nvm a nivel de usuario.
+makedepends=()
+options=('!strip' '!debug')
+install=gemini-float.install
+
+# build() compila desde la raíz del repositorio local (el directorio padre).
+# No se usa source= porque este PKGBUILD es exclusivo para compilación local.
+build() {
+    cd "${startdir}/.."
+    pnpm install --frozen-lockfile
+    pnpm tauri build --no-bundle
+}
+
+package() {
+    local _root="${startdir}/.."
+
+    # Binario en /usr/bin (estándar FHS)
+    install -Dm755 "$_root/src-tauri/target/release/$pkgname" \
+        "$pkgdir/usr/bin/$pkgname"
+
+    # Iconos en la jerarquía hicolor (estándar XDG)
+    install -Dm644 "$_root/src-tauri/icons/icon.png" \
+        "$pkgdir/usr/share/icons/hicolor/256x256/apps/$pkgname.png"
+    install -Dm644 "$_root/src-tauri/icons/128x128.png" \
+        "$pkgdir/usr/share/icons/hicolor/128x128/apps/$pkgname.png"
+    install -Dm644 "$_root/src-tauri/icons/32x32.png" \
+        "$pkgdir/usr/share/icons/hicolor/32x32/apps/$pkgname.png"
+
+    # Archivo .desktop (estándar XDG/Freedesktop)
+    install -Dm644 "$_root/$pkgname.desktop" \
+        "$pkgdir/usr/share/applications/$pkgname.desktop"
+
+    # Licencia (requerida por las directrices de Arch)
+    install -Dm644 "$_root/LICENSE" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
