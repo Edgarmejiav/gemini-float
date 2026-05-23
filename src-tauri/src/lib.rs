@@ -331,9 +331,12 @@ pub fn run() {
             })
             .build()?;
 
-            // ── Atajo global Ctrl+Alt+Space ───────────────────────────
-            let shortcut: Shortcut = "ctrl+alt+space".parse().unwrap();
+            // ── Atajo global Ctrl+Space ───────────────────────────
+            let shortcut: Shortcut = "ctrl+space".parse().unwrap();
             let app_handle = app.handle().clone();
+
+            // Intentar desregistrar primero para forzar la prevalencia
+            let _ = app.global_shortcut().unregister(shortcut);
 
             if let Err(err) = app.global_shortcut().on_shortcut(
                 shortcut,
@@ -344,7 +347,7 @@ pub fn run() {
                 },
             ) {
                 eprintln!(
-                    "Advertencia: No se pudo registrar Ctrl+Alt+Space: {}",
+                    "Advertencia: No se pudo registrar Ctrl+Space: {}",
                     err
                 );
             }
@@ -363,7 +366,7 @@ pub fn run() {
 
             let _tray = TrayIconBuilder::new()
                 .icon(tray_icon)
-                .tooltip("Gemini Float — Ctrl+Alt+Space")
+                .tooltip("Gemini Float — Ctrl+Space")
                 .menu(&menu)
                 .on_menu_event(|app, event| match event.id().as_ref() {
                     "show" => toggle_window(app),

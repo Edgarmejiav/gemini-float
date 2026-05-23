@@ -138,7 +138,7 @@ fi
 # --- Configure GNOME keyboard shortcut (current user) -----------------------
 if command -v gsettings &>/dev/null; then
     echo ""
-    echo -e "${BLUE}⌨️  Configuring Ctrl+Alt+Space shortcut in GNOME...${NC}"
+    echo -e "${BLUE}⌨️  Configuring Ctrl+Space shortcut in GNOME...${NC}"
 
     KEYPATH="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom-gemini-float/"
 
@@ -164,7 +164,7 @@ if command -v gsettings &>/dev/null; then
             custom-keybindings "[${CLEANED}, '$KEYPATH']"
     fi
 
-    echo -e "${GREEN}✓ Ctrl+Alt+Space shortcut registered in GNOME.${NC}"
+    echo -e "${GREEN}✓ Ctrl+Space shortcut registered in GNOME.${NC}"
 fi
 
 # --- Final summary -----------------------------------------------------------

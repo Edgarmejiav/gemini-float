@@ -11,7 +11,7 @@ A floating window wrapper focused exclusively on Google Gemini. No address bar, 
 
 - **Borderless window**, always on top of other applications
 - **Shadow startup** — starts without showing any window
-- **Instant toggle** — `Ctrl+Alt+Space` to show/hide
+- **Instant toggle** — `Ctrl+Space` to show/hide
 - **Auto-hide** — click outside and the window disappears
 - **Single instance** — never spawns duplicate processes
 - **System Tray** — icon with context menu (Show/Hide, Quit)
@@ -58,7 +58,7 @@ The binary is generated at `src-tauri/target/release/gemini-float`.
 
 ## ⌨️ Wayland Shortcut Setup (GNOME)
 
-On pure Wayland, apps cannot capture global keyboard shortcuts directly. To make `Ctrl+Alt+Space` work:
+On pure Wayland, apps cannot capture global keyboard shortcuts directly. To make `Ctrl+Space` work:
 
 ### Option 1: GNOME Settings (Recommended)
 
@@ -67,7 +67,7 @@ On pure Wayland, apps cannot capture global keyboard shortcuts directly. To make
 3. Set:
    - **Name:** `Gemini Float Toggle`
    - **Command:** `/path/to/gemini-float --toggle`
-   - **Shortcut:** `Ctrl+Alt+Space`
+   - **Shortcut:** `Ctrl+Space`
 
 ### Option 2: Direct CLI
 
