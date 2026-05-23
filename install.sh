@@ -150,7 +150,7 @@ if command -v gsettings &>/dev/null; then
         command "gemini-float --toggle"
     gsettings set \
         org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:"$KEYPATH" \
-        binding "<Control><Alt>space"
+        binding "<Control>space"
 
     CURRENT=$(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings)
 
@@ -173,5 +173,5 @@ echo -e "${GREEN}${BOLD}=== 🎉 Gemini Float installed successfully! ===${NC}"
 echo ""
 echo -e "  ${BOLD}1.${NC} GNOME menu -> search for ${YELLOW}Gemini Float${NC}"
 echo -e "  ${BOLD}2.${NC} Terminal:   ${YELLOW}gemini-float${NC}"
-echo -e "  ${BOLD}3.${NC} Shortcut:   ${YELLOW}Ctrl + Alt + Space${NC}"
+echo -e "  ${BOLD}3.${NC} Shortcut:   ${YELLOW}Ctrl + Space${NC}"
 echo ""
