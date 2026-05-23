@@ -18,33 +18,87 @@ fn last_position() -> &'static Mutex<Option<PhysicalPosition<i32>>> {
 }
 
 /// Alterna visibilidad de la ventana principal.
-/// - Visible + enfocada → guardar posición y ocultar.
-/// - Oculta / sin foco  → mostrar y restaurar posición.
+/// - Si está visible → la oculta (sin importar el foco).
+/// - Si está oculta → la posiciona en el cursor (centrada y ajustada al monitor) y la muestra.
 fn toggle_window(app: &tauri::AppHandle) {
-    if let Some(window) = app.get_webview_window("main") {
-        let visible = window.is_visible().unwrap_or(false);
-        let focused = window.is_focused().unwrap_or(false);
+    let app_handle = app.clone();
+    let _ = app.run_on_main_thread(move || {
+        if let Some(window) = app_handle.get_webview_window("main") {
+            let visible = window.is_visible().unwrap_or(false);
 
-        if visible && focused {
-            // Guardar posición actual antes de ocultar
-            if let Ok(pos) = window.outer_position() {
-                if let Ok(mut last) = last_position().lock() {
-                    *last = Some(pos);
+            if visible {
+                // Guardar posición actual antes de ocultar
+                if let Ok(pos) = window.outer_position() {
+                    if let Ok(mut last) = last_position().lock() {
+                        *last = Some(pos);
+                    }
                 }
-            }
-            let _ = window.hide();
-        } else {
-            let _ = window.show();
-            // Restaurar última posición conocida
-            if let Ok(last) = last_position().lock() {
-                if let Some(pos) = *last {
-                    let _ = window.set_position(pos);
+                let _ = window.hide();
+            } else {
+                if let Ok(pos) = app_handle.cursor_position() {
+                    let cx = pos.x as i32;
+                    let cy = pos.y as i32;
+
+                    // Encontrar el monitor que contiene el cursor
+                    let mut target_monitor = None;
+                    if let Ok(monitors) = window.available_monitors() {
+                        for m in monitors {
+                            let m_pos = m.position();
+                            let m_size = m.size();
+                            let mx = m_pos.x;
+                            let my = m_pos.y;
+                            let mw = m_size.width as i32;
+                            let mh = m_size.height as i32;
+
+                            if cx >= mx && cx < mx + mw && cy >= my && cy < my + mh {
+                                target_monitor = Some(m);
+                                break;
+                            }
+                        }
+                    }
+
+                    // Fallback al monitor actual o principal si no se detecta ninguno que contenga el cursor
+                    let monitor = target_monitor
+                        .or_else(|| window.current_monitor().ok().flatten())
+                        .or_else(|| window.primary_monitor().ok().flatten());
+
+                    if let Some(m) = monitor {
+                        let m_pos = m.position();
+                        let m_size = m.size();
+                        let mx = m_pos.x;
+                        let my = m_pos.y;
+                        let mw = m_size.width as i32;
+                        let mh = m_size.height as i32;
+
+                        let w_size = window.outer_size().unwrap_or(tauri::PhysicalSize::new(900, 700));
+                        let ww = w_size.width as i32;
+                        let wh = w_size.height as i32;
+
+                        // Calcular posición centrada en el cursor
+                        let mut tx = cx - (ww / 2);
+                        let mut ty = cy - (wh / 2);
+
+                        // Clamp para evitar que se salga del monitor
+                        tx = tx.clamp(mx, mx + mw - ww);
+                        ty = ty.clamp(my, my + mh - wh);
+
+                        let _ = window.set_position(PhysicalPosition::new(tx, ty));
+                    }
+                } else {
+                    // Fallback a la última posición conocida
+                    if let Ok(last) = last_position().lock() {
+                        if let Some(pos) = *last {
+                            let _ = window.set_position(pos);
+                        }
+                    }
                 }
+
+                let _ = window.show();
+                let _ = window.set_always_on_top(true);
+                let _ = window.set_focus();
             }
-            let _ = window.set_always_on_top(true);
-            let _ = window.set_focus();
         }
-    }
+    });
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
