@@ -78,9 +78,11 @@ fn toggle_window(app: &tauri::AppHandle) {
                         let mut tx = cx - (ww / 2);
                         let mut ty = cy - (wh / 2);
 
-                        // Clamp para evitar que se salga del monitor
-                        tx = tx.clamp(mx, mx + mw - ww);
-                        ty = ty.clamp(my, my + mh - wh);
+                        // Clamp para evitar que se salga del monitor.
+                        // Si la ventana es más grande que el monitor, el límite superior
+                        // se colapsa al inferior para evitar el panic de clamp (min > max).
+                        tx = tx.clamp(mx, (mx + mw - ww).max(mx));
+                        ty = ty.clamp(my, (my + mh - wh).max(my));
 
                         let _ = window.set_position(PhysicalPosition::new(tx, ty));
                     }
